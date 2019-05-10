@@ -47,7 +47,8 @@
     ("gitlab.com" . "gitlab")
     ("git.savannah.gnu.org" . "gnu")
     ("gist.github.com" . "gist")
-    ("git.sr.ht" . "sourcehut"))
+    ("git.sr.ht" . "sourcehut")
+    ("webrtc.googlesource.com" . "googlesource"))
   "Alist of domain patterns to remote types."
 
   :type '(alist :key-type (string :tag "Domain")
@@ -59,7 +60,8 @@
                              (const :tag "git.savannah.gnu.org" "gnu")
                              (const :tag "Phabricator" "phabricator")
                              (const :tag "gist.github.com" "gist")
-                             (const :tag "sourcehut" "sourcehut")))
+                             (const :tag "sourcehut" "sourcehut")
+                             (const :tag "googlesource" "googlesource")))
   :group 'browse-at-remote)
 
 (defcustom browse-at-remote-prefer-symbolic t
@@ -329,6 +331,16 @@ Currently the same as for github."
 (defun browse-at-remote--format-commit-url-as-sourcehut (repo-url commithash)
   "Commit URL formatted for sourcehut."
   (format "%s/commit/%s" repo-url commithash))
+
+(defun browse-at-remote--format-region-url-as-googlesource (repo-url location filename &optional linestart lineend)
+  "URL formatted for googlesource."
+  (cond
+   (linestart (format "%s/+/refs/heads/master/%s#%d" repo-url filename linestart))
+   (t (format "%s/+/%s/%s#%d" repo-url location filename))))
+
+(defun browse-at-remote--format-commit-url-as-googlesource (repo-url commithash)
+  "Commit URL formatted for googlesource"
+  (format "%s/+/%s" repo-url commithash))
 
 (defun browse-at-remote--commit-url (commithash)
   "Return the URL to browse COMMITHASH."
